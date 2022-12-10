@@ -10,21 +10,17 @@ import java.util.Random;
 import java.util.stream.Stream;
 
 public class HelloController {
-
     public Button button;
     public Label label;
-
     public Pane pPain;
-
+    private boolean udaloSie = false;
+    private int tura = 0;
+    private ArrayList<Button> lista;
+   private Random random = new Random();
     @FXML
     public void initialize() {
         addButtons();
     }
-
-    boolean udaloSie = false;
-    int tura = 0;
-    ArrayList<Button> lista;
-
     private void addButtons() {
         label = new Label();
         label.setPrefSize(300, 100);
@@ -55,51 +51,50 @@ public class HelloController {
         button.setLayoutY(200);
         button.setText("Graj");
         pPain.getChildren().add(button);
-        Random random = new Random();
         button.setOnAction(event -> {
-            String znak;
-            do {
-                udaloSie = false;
-                tura++;
-                if (tura % 2 == 1)
-                    znak = "X";
-                else
-                    znak = "O";
-                int losowyPrzycisk = random.nextInt(9);
-                if (lista.get(losowyPrzycisk).getText().equals("")) {
-                    lista.get(losowyPrzycisk).setText(znak);
-                    udaloSie = true;
-                } else
-                    tura--;
-                czyWygral();
-            } while (!udaloSie);
+            grajZawartosc();
         });
     }
 
-    public void czyWygral() {
-        if (lista.get(0).getText().equals("O") && lista.get(1).getText().equals("O") && lista.get(2).getText().equals("O") || lista.get(3).getText().equals("O") && lista.get(4).getText().equals("O") && lista.get(5).getText().equals("O") || lista.get(6).getText().equals("O") && lista.get(7).getText().equals("O") && lista.get(8).getText().equals("O") ||
-                lista.get(0).getText().equals("O") && lista.get(4).getText().equals("O") && lista.get(8).getText().equals("O") || lista.get(2).getText().equals("O") && lista.get(4).getText().equals("O") && lista.get(6).getText().equals("O") ||
-                lista.get(0).getText().equals("O") && lista.get(3).getText().equals("O") && lista.get(6).getText().equals("O") || lista.get(1).getText().equals("O") && lista.get(4).getText().equals("O") && lista.get(7).getText().equals("O") || lista.get(2).getText().equals("O") && lista.get(5).getText().equals("O") && lista.get(8).getText().equals("O")) {
-            tura = 0;
-            Stream.of(lista.get(0), lista.get(1), lista.get(2), lista.get(3), lista.get(4), lista.get(5), lista.get(6), lista.get(7), lista.get(8)).forEach(btn -> {
-                btn.setText("");
-            });
-            label.setText("Wygrywają kółka");
+    private void grajZawartosc() {
+        String znak;
+        do {
+            udaloSie = false;
+            tura++;
+            if (tura % 2 == 1)
+                znak = "X";
+            else
+                znak = "O";
+            int losowyPrzycisk = random.nextInt(9);
+            if (lista.get(losowyPrzycisk).getText().equals("")) {
+                lista.get(losowyPrzycisk).setText(znak);
+                udaloSie = true;
+            } else
+                tura--;
+            czyWygral();
+        } while (!udaloSie);
+    }
 
-        } else if (lista.get(0).getText().equals("X") && lista.get(1).getText().equals("X") && lista.get(2).getText().equals("X") || lista.get(3).getText().equals("X") && lista.get(4).getText().equals("X") && lista.get(5).getText().equals("X") || lista.get(6).getText().equals("X") && lista.get(7).getText().equals("X") && lista.get(8).getText().equals("X") ||
-                lista.get(0).getText().equals("X") && lista.get(4).getText().equals("X") && lista.get(8).getText().equals("X") || lista.get(2).getText().equals("X") && lista.get(4).getText().equals("X") && lista.get(6).getText().equals("X") ||
-                lista.get(0).getText().equals("X") && lista.get(3).getText().equals("X") && lista.get(6).getText().equals("X") || lista.get(1).getText().equals("X") && lista.get(4).getText().equals("X") && lista.get(7).getText().equals("X") || lista.get(2).getText().equals("X") && lista.get(5).getText().equals("X") && lista.get(8).getText().equals("X")) {
-            tura = 0;
-            Stream.of(lista.get(0), lista.get(1), lista.get(2), lista.get(3), lista.get(4), lista.get(5), lista.get(6), lista.get(7), lista.get(8)).forEach(btn -> {
-                btn.setText("");
-            });
-            label.setText("Wygrywają krzyżyki");
-        }
-        else if(tura == 9){
-            Stream.of(lista.get(0), lista.get(1), lista.get(2), lista.get(3), lista.get(4), lista.get(5), lista.get(6), lista.get(7), lista.get(8)).forEach(btn -> {
-                btn.setText("");
-            });
-            label.setText("Remis");
-        }
+    public void czyWygral() {
+        String znak = "O";
+        for (int i = 0; i < 2; i++) {
+            if (lista.get(0).getText().equals(znak) && lista.get(1).getText().equals(znak) && lista.get(2).getText().equals(znak) || lista.get(3).getText().equals(znak) && lista.get(4).getText().equals(znak) && lista.get(5).getText().equals(znak) || lista.get(6).getText().equals(znak) && lista.get(7).getText().equals(znak) && lista.get(8).getText().equals(znak) ||
+                    lista.get(0).getText().equals(znak) && lista.get(4).getText().equals(znak) && lista.get(8).getText().equals(znak) || lista.get(2).getText().equals(znak) && lista.get(4).getText().equals(znak) && lista.get(6).getText().equals(znak) ||
+                    lista.get(0).getText().equals(znak) && lista.get(3).getText().equals(znak) && lista.get(6).getText().equals(znak) || lista.get(1).getText().equals(znak) && lista.get(4).getText().equals(znak) && lista.get(7).getText().equals(znak) || lista.get(2).getText().equals(znak) && lista.get(5).getText().equals(znak) && lista.get(8).getText().equals(znak)) {
+                poKoncu();
+                label.setText("Wygrywają " + znak);
+            }
+            znak = "X";
+            }
+        if (tura == 9){
+                poKoncu();
+                label.setText("Remis");
+            }
+    }
+    private void poKoncu() {
+        tura = 0;
+        Stream.of(lista.get(0), lista.get(1), lista.get(2), lista.get(3), lista.get(4), lista.get(5), lista.get(6), lista.get(7), lista.get(8)).forEach(btn -> {
+            btn.setText("");
+        });
     }
 }
